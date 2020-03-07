@@ -1,0 +1,19 @@
+{
+  "name": "cockatoo",
+  "version": "1.0.0",
+  "description": "A program to intercept XHR requests in a specific way.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sebug/cockatoo.git"
+  },
+  "author": "Sebastian Gfeller",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/sebug/cockatoo/issues"
+  },
+  "homepage": "https://github.com/sebug/cockatoo#readme"
+}
