@@ -64,13 +64,14 @@ function afterLogin(cookieHeader) {
     for (let cookie of cookies) {
 	cookieJar.setCookieSync(cookie, finalUrl);
     }
+    resourceLoader.loggingEnabled = true;
     JSDOM.fromURL(finalUrl, {
 	runScripts: 'dangerously',
 	pretendToBeVisual: true,
 	resources: resourceLoader,
 	cookieJar: cookieJar
     }).then(dom => {
-	console.log(dom.serialize());
+	console.log('done');
     });
 
 }
