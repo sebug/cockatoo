@@ -1,6 +1,8 @@
 const jsdom = require("jsdom");
 const { JSDOM } = jsdom;
 const https = require('https');
+const tough = require('tough-cookie');
+const { Cookie } = tough;
 
 if (process.argv.length < 7) {
     console.error('Usage: node index.js host loginpath finalUrl username password');
@@ -45,11 +47,6 @@ loginReq.on('error', (e) => {
 loginReq.write(requestString);
 loginReq.end();
 
-function afterLogin(data) {
-    console.log(data);
-}
-
-
 class CustomResourceLoader extends jsdom.ResourceLoader {
     
     fetch(url, options) {
@@ -59,25 +56,30 @@ class CustomResourceLoader extends jsdom.ResourceLoader {
 	return super.fetch(url, options);
     }
 }
-const resourceLoader = new CustomResourceLoader();
-const cookieJar = new jsdom.CookieJar();
+
+function afterLogin(cookieHeader) {
+    const cookies = cookieHeader.map(Cookie.parse);
+    const resourceLoader = new CustomResourceLoader();
+    const cookieJar = new jsdom.CookieJar();
+    for (let cookie of cookies) {
+	cookieJar.setCookieSync(cookie, finalUrl);
+    }
+    JSDOM.fromURL(finalUrl, {
+	runScripts: 'dangerously',
+	pretendToBeVisual: true,
+	resources: resourceLoader,
+	cookieJar: cookieJar
+    }).then(dom => {
+	console.log(dom.serialize());
+    });
+
+}
 
 
 
 
 
-/*JSDOM.fromURL(loginUrl, {
-    runScripts: 'dangerously',
-    pretendToBeVisual: true,
-    resources: resourceLoader,
-    cookieJar: cookieJar
-}).then(dom => {
-    setTimeout(() => {
-	console.log('Loaded');
-	resourceLoader.loggingEnabled = true;
-	const toEval = `$.ajax({ url: "/Login", method: "POST", data: { grant_type: 'password', username: '${userName}', password: '${password}' }  })`;
-	dom.window.eval(toEval);
-    }, 10 * 1000);
-});*/
+
+
 
 
