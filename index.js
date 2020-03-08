@@ -58,11 +58,14 @@ class CustomResourceLoader extends jsdom.ResourceLoader {
 }
 
 function afterLogin(cookieHeader) {
-    const cookies = cookieHeader.map(Cookie.parse);
     const resourceLoader = new CustomResourceLoader();
-    const cookieJar = new jsdom.CookieJar();
-    for (let cookie of cookies) {
-	cookieJar.setCookieSync(cookie, finalUrl);
+    let cookieJar = new jsdom.CookieJar();
+    const sourceUrl = 'https://' + host;
+    for (let cookieString of cookieHeader) {
+	cookieJar.setCookieSync(
+	    Cookie.parse(cookieString), sourceUrl, {
+		loose: true
+	    });
     }
     resourceLoader.loggingEnabled = true;
     JSDOM.fromURL(finalUrl, {
@@ -71,7 +74,9 @@ function afterLogin(cookieHeader) {
 	resources: resourceLoader,
 	cookieJar: cookieJar
     }).then(dom => {
-	console.log('done');
+	setTimeout(() => {
+	    console.log(dom.serialize());
+	}, 10 * 1000);
     });
 
 }
