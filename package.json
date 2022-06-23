@@ -18,6 +18,6 @@
   "homepage": "https://github.com/sebug/cockatoo#readme",
   "devDependencies": {
     "canvas": "^2.6.1",
-    "jsdom": "^16.2.0"
+    "jsdom": "^16.5.0"
   }
 }
